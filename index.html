@@ -8,21 +8,19 @@
 </head>
 <body>
 
-<!-- スマホ用のキーボード起動用input -->
-<input type="text" id="mobile-typing-input" style="position: absolute; opacity: 0; pointer-events: none;" autocomplete="off">
-
 <div id="console-container">
   <!-- タイトル画面 -->
   <div id="title-screen">
     <h1 id="game-title">CHRONOS PROTOCOL</h1>
     <p id="game-subtitle">-- 宙域観測船クロノス・極秘任務記録 --</p>
-    <!-- タイトル画面のボタン部分 -->
-    <button id="start-btn-1" style="margin-bottom: 10px;">第1章：深淵からの呼び声</button>
-    <button id="start-btn-2" style="margin-bottom: 10px;">第2章：招かれざる乗客たち</button>
-    <button id="start-btn-3">第3章：クロノス・プロトコル</button>
+    <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%;">
+      <button id="start-btn-1">第1章：深淵からの呼び声</button>
+      <button id="start-btn-2">第2章：招かれざる乗客たち</button>
+      <button id="start-btn-3">第3章：クロノス・プロトコル</button>
+    </div>
   </div>
 
-  <!-- ゲームプレイ画面（最初は非表示） -->
+  <!-- ゲームプレイ画面 -->
   <div id="game-screen" style="display: none;">
     <div id="status-bar">
       <span id="ship-status">CHRONOS M-SYS // STATUS: NOMINAL</span>
@@ -38,19 +36,21 @@
       <div id="interactive-panel">
         <div id="choice-container"></div>
         
-        <!-- ▼▼▼ 第2章のタイピング用エリア ▼▼▼ -->
-        <div id="typing-container" style="display: none; text-align: center; margin-top: 10px;">
-          <div id="typing-target" style="font-family: 'Courier New', monospace; font-size: 1.5rem; color: #0f0; letter-spacing: 5px;"></div>
-          <div id="typing-input" style="font-family: 'Courier New', monospace; font-size: 1.5rem; color: #fff; letter-spacing: 5px;"></div>
+        <!-- ▼▼ SFターミナル風のカッコいい入力欄 ▼▼ -->
+        <div id="typing-container" style="display: none; text-align: center; margin-top: 15px; padding: 10px; background: rgba(0, 20, 0, 0.9); border: 1px solid #0f0;">
+          <div style="color: #0f0; font-family: 'Courier New', monospace; font-size: 0.9rem; margin-bottom: 5px; letter-spacing: 2px;">
+            TARGET CODE: <span id="typing-target" style="color: #ff0;"></span>
+          </div>
+          <input type="text" id="visible-typing-input" inputmode="latin" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="_CLICK HERE TO HACK_" style="background: #000; color: #0f0; border: 1px solid #0f0; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 1.2rem; letter-spacing: 3px; text-align: center; width: 80%; max-width: 350px; outline: none;">
         </div>
-        <!-- ▲▲▲ ここまで ▲▲▲ -->
+        <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
 
         <button id="sync-btn">TX: 同期パルス送信</button>
       </div>
     </div>
   </div>
 
-  <!-- ▼▼▼ エンディング画面 ▼▼▼ -->
+  <!-- エンディング画面 -->
   <div id="ending-screen" style="display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #000; z-index: 10; color: #0f0; font-family: 'Courier New', Courier, monospace; text-align: center;">
     <div id="epilogue-text" style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0; transition: opacity 2s; line-height: 1.8; padding: 20px;"></div>
     
@@ -73,7 +73,6 @@
     
     <button id="return-title-btn" style="display: none; padding: 10px 20px; background-color: transparent; color: #0f0; border: 1px solid #0f0; cursor: pointer; margin-top: 20px;">タイトルへ戻る</button>
   </div>
-  <!-- ▲▲▲ ここまで ▲▲▲ -->
 
 </div>
 

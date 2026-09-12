@@ -299,3 +299,20 @@ button:disabled {
     font-size: 1.2rem;
   }
 }
+
+/* スマホ表示時（画面幅768px以下）は入力欄を画面中央にフロート表示する */
+@media (max-width: 768px) {
+  #typing-container {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    width: 85%;
+    max-width: 320px;
+    background: rgba(0, 15, 0, 0.95) !important;
+    box-shadow: 0 0 25px #0f0;
+    border: 2px solid #0f0 !important;
+    padding: 15px !important;
+  }
+}
