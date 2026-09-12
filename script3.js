@@ -1,17 +1,27 @@
 // ==========================================
-// 第3章：クロノス・プロトコル (最終決戦・エピローグ追加版・スマホ対応)
+// 第3章：クロノス・プロトコル (スマホ・PC完全対応版)
 // ==========================================
 
-// スマホ用：タイピング中かどうかを管理するフラグ
+const mobileInput3 = document.getElementById('mobile-typing-input');
 let isTypingActive3 = false;
 
-// 画面をタッチしたとき、第3章のタイピング中であればキーボードを再度出す
+// スマホ・PC共通：隠しinputへの入力を監視して文字を受け取る
+if (mobileInput3) {
+  mobileInput3.addEventListener('input', (e) => {
+    if (currentChapter !== 3 || !isTypingActive3) return;
+    const val = mobileInput3.value;
+    if (val.length > 0) {
+      const inputChar = val.slice(-1).toUpperCase();
+      mobileInput3.value = ""; // 入力されたら即座にクリア
+      checkTypedChar3(inputChar);
+    }
+  });
+}
+
+// 画面をタッチしたとき、タイピング中であればキーボードを再フォーカス
 document.addEventListener('click', () => {
   if (isTypingActive3 && currentChapter === 3) {
-    const mInput = document.getElementById('mobile-typing-input');
-    if (mInput) {
-      mInput.focus();
-    }
+    if (mobileInput3) mobileInput3.focus();
   }
 });
 
@@ -26,7 +36,7 @@ async function runChapter3() {
   logWindow.innerHTML = '';
   hackPhase = 0;
   syncCount = 0; 
-  isTypingActive3 = false; // 初期化時はオフ
+  isTypingActive3 = false;
   shipStatus.textContent = "CHRONOS M-SYS // STATUS: DOCKED";
   shipStatus.style.color = "#0f0";
   syncRateDisplay.textContent = "SYSTEM DOWN";
@@ -106,28 +116,22 @@ async function startFinalBattlePhase() {
     await addLog("Kokoro", "『クロノス・プロトコル』発動準備！ コード入力後、タイミングを合わせてパルスを撃ち込んでください！", "kokoro-msg");
   } else {
     typingContainer.style.display = 'none';
-    isTypingActive3 = false; // タイピング終了
+    isTypingActive3 = false;
     prepareFinalBlow();
     return;
   }
   
   typingTarget.textContent = currentCode;
 
-  // ★タイピングフェーズが始まったらフラグをONにしてキーボードを強制起動
+  // タイピング開始時にフラグをONにしてキーボードを強制起動
   isTypingActive3 = true;
-  const mInput = document.getElementById('mobile-typing-input');
-  if (mInput) {
-    mInput.focus();
-  }
-
-  document.addEventListener('keydown', handleTyping3);
+  if (mobileInput3) mobileInput3.focus();
 }
 
-function handleTyping3(e) {
+function checkTypedChar3(inputChar) {
   if (currentChapter !== 3) return;
-  if (!/^[a-zA-Z0-9_]$/.test(e.key)) return; 
+  if (!/^[A-Z0-9_]$/.test(inputChar)) return; 
 
-  const inputChar = e.key.toUpperCase(); 
   const targetChar = currentCode[typedCode.length];
 
   if (inputChar === targetChar) {
@@ -139,7 +143,7 @@ function handleTyping3(e) {
     setTimeout(() => { entityCore.style.transform = "scale(1)"; }, 100);
 
     if (typedCode === currentCode) {
-      document.removeEventListener('keydown', handleTyping3);
+      isTypingActive3 = false;
       let rate = Math.floor((hackPhase / 3) * 100);
       syncRateDisplay.textContent = `HACKING: ${rate}.00%`;
       typingInput.style.color = "#fff";
@@ -154,7 +158,7 @@ function handleTyping3(e) {
 }
 
 async function prepareFinalBlow() {
-    isTypingActive3 = false; // 念のためオフ
+    isTypingActive3 = false;
     await addLog("SYSTEM", "ハッキング完了。対象のコアが露出。同調プロセスを開始します。", "system-msg");
     syncBtn.style.display = "block"; 
     syncBtn.disabled = false; 

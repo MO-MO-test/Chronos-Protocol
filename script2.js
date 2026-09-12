@@ -1,47 +1,55 @@
 // ==========================================
-// 第2章：招かれざる乗客たち (タイピング・ハッキング完全対応版)
+// 第2章：招かれざる乗客たち (スマホ・PC完全対応版)
 // ==========================================
 
 const typingContainer = document.getElementById('typing-container');
 const typingTarget = document.getElementById('typing-target');
 const typingInput = document.getElementById('typing-input');
+const mobileInput = document.getElementById('mobile-typing-input');
 
 let currentCode = "";
 let typedCode = "";
 let hackPhase = 0;
-
-// スマホ用：タイピング中かどうかを管理するフラグ
 let isTypingActive = false;
 
-// スマホで画面をタッチしたとき、タイピング中であればキーボードを再度出す
-document.addEventListener('click', () => {
-  if (isTypingActive) {
-    const mInput = document.getElementById('mobile-typing-input');
-    if (mInput) {
-      mInput.focus();
+// スマホ・PC共通：隠しinputへの入力を監視して文字を受け取る
+if (mobileInput) {
+  mobileInput.addEventListener('input', (e) => {
+    if (currentChapter !== 2 || !isTypingActive) return;
+    const val = mobileInput.value;
+    if (val.length > 0) {
+      const inputChar = val.slice(-1).toUpperCase();
+      mobileInput.value = ""; // 入力されたら即座にクリア
+      checkTypedChar(inputChar);
     }
+  });
+}
+
+// 画面をタッチしたとき、タイピング中であればキーボードを再フォーカス
+document.addEventListener('click', () => {
+  if (isTypingActive && currentChapter === 2) {
+    if (mobileInput) mobileInput.focus();
   }
 });
 
 document.getElementById('start-btn-2').addEventListener('click', () => {
   document.getElementById('title-screen').style.display = 'none';
   document.getElementById('game-screen').style.display = 'flex';
-  currentChapter = 2; // ここで第2章だと教えてあげる
+  currentChapter = 2;
   runChapter2();
 });
 
 async function runChapter2() {
   logWindow.innerHTML = '';
   hackPhase = 0;
-  isTypingActive = false; // 初期化時はタイピングオフ
+  isTypingActive = false;
   shipStatus.textContent = "CHRONOS M-SYS // STATUS: JUMP COMPLETED";
   shipStatus.style.color = "#0f0";
   syncRateDisplay.textContent = "HACKING: 0.00%";
   entityCore.style.opacity = 0;
   typingContainer.style.display = 'none';
-  syncBtn.style.display = 'none'; // 第2章はタイピングなのでボタンは隠す
+  syncBtn.style.display = 'none';
   
-  // script1.js で作った「文字が出るまで待ってくれる addLog」をそのまま使う！
   await addLog("SYSTEM", "次元跳躍完了。現在地：レグルス星系・辺境デブリ帯。", "system-msg");
   await sleep(1000);
   
@@ -99,9 +107,6 @@ async function runChapter2() {
   startHackingPhase();
 }
 
-// ------------------------------------------
-// タイピングハッキング処理
-// ------------------------------------------
 async function startHackingPhase() {
   hackPhase++;
   typedCode = "";
@@ -110,41 +115,35 @@ async function startHackingPhase() {
   choiceContainer.style.display = 'none';
 
   if (hackPhase === 1) {
-    currentCode = "INJECT_CHRONOS_WORM"; // ココロのワームプログラム
+    currentCode = "INJECT_CHRONOS_WORM";
     await addLog("SYSTEM", "[PHASE 1] 第一防壁接近。クロノス特製ワームを注入せよ。", "system-msg");
   } else if (hackPhase === 2) {
-    currentCode = "IGNORE_LEGAL_WARNING"; // エージェントの違法ゴリ押しコード
+    currentCode = "IGNORE_LEGAL_WARNING";
     entityCore.style.borderRadius = "30%";
     await addLog("AGENT", "第一層突破！ 次は俺の違法（ヤバい）ジャミングコードを叩き込め！ 法的警告は無視だ！", "agent-msg");
   } else if (hackPhase === 3) {
-    currentCode = "REGULUS_BLOOD_AUTH"; // 王族の血統認証コード
+    currentCode = "REGULUS_BLOOD_AUTH";
     entityCore.style.borderRadius = "50%";
     await addLog("ROYAL", "最終防壁です！ 我が王家の血統認証（ブラッド・アクセス）を通してください！", "royal-msg");
   } else {
     typingContainer.style.display = 'none';
-    isTypingActive = false; // タイピング終了
+    isTypingActive = false;
     completeChapter2();
     return;
   }
   
   typingTarget.textContent = currentCode;
 
-  // ★タイピングフェーズが始まったらフラグをONにしてキーボードを強制起動する
+  // タイピング開始時にフラグをONにしてキーボードを強制起動
   isTypingActive = true;
-  const mInput = document.getElementById('mobile-typing-input');
-  if (mInput) {
-    mInput.focus();
-  }
-
-  document.addEventListener('keydown', handleTyping);
+  if (mobileInput) mobileInput.focus();
 }
 
-function handleTyping(e) {
+// 文字判定の共通処理
+function checkTypedChar(inputChar) {
   if (currentChapter !== 2) return;
-  
-  if (!/^[a-zA-Z0-9_]$/.test(e.key)) return; 
+  if (!/^[A-Z0-9_]$/.test(inputChar)) return;
 
-  const inputChar = e.key.toUpperCase(); 
   const targetChar = currentCode[typedCode.length];
 
   if (inputChar === targetChar) {
@@ -156,7 +155,7 @@ function handleTyping(e) {
     setTimeout(() => { entityCore.style.transform = "scale(1)"; }, 100);
 
     if (typedCode === currentCode) {
-      document.removeEventListener('keydown', handleTyping);
+      isTypingActive = false;
       let rate = Math.floor((hackPhase / 3) * 100);
       syncRateDisplay.textContent = `HACKING: ${rate}.00%`;
       typingInput.style.color = "#fff";
@@ -173,7 +172,7 @@ function handleTyping(e) {
 }
 
 async function completeChapter2() {
-  isTypingActive = false; // 念のため確実にオフ
+  isTypingActive = false;
   entityCore.style.boxShadow = "0 0 50px #0ff, inset 0 0 30px #0ff";
   entityCore.style.backgroundColor = "rgba(100, 255, 255, 0.9)";
   shipStatus.textContent = "STATUS: FIREWALL BREACHED";
