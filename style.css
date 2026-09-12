@@ -263,3 +263,39 @@ button:disabled {
   80% { transform: translate(5px, -5px); filter: hue-rotate(360deg); }
   100% { transform: translate(0, 0); filter: hue-rotate(0deg); }
 }
+
+/* ==========================================
+   スマホ（レスポンシブ）対応用のスタイル
+   ========================================== */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* ゲーム全体のコンテナをスマホの幅に合わせる */
+  .game-container, #game-container {
+    width: 100% !important;
+    max-width: 100vw;
+    height: 90vh !important;
+    margin: 0 auto;
+  }
+
+  /* コアのサイズを少しコンパクトに */
+  #entity-core {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* ターミナルログの文字サイズ調整 */
+  .log-container, pre, p {
+    font-size: 13px;
+  }
+
+  /* ボタンを押しやすく大きくする */
+  #sync-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+  }
+}
