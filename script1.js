@@ -310,11 +310,3 @@ startBtn.addEventListener('click', () => {
   currentChapter = 1;
   runStory();
 });
-
-// スマホで画面をタッチしたときにキーボードを起動する
-document.addEventListener('click', () => {
-  const mInput = document.getElementById('mobile-typing-input');
-  if (mInput) {
-    mInput.focus();
-  }
-});

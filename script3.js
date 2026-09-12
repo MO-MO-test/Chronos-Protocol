@@ -1,6 +1,19 @@
 // ==========================================
-// 第3章：クロノス・プロトコル (最終決戦・エピローグ追加版)
+// 第3章：クロノス・プロトコル (最終決戦・エピローグ追加版・スマホ対応)
 // ==========================================
+
+// スマホ用：タイピング中かどうかを管理するフラグ
+let isTypingActive3 = false;
+
+// 画面をタッチしたとき、第3章のタイピング中であればキーボードを再度出す
+document.addEventListener('click', () => {
+  if (isTypingActive3 && currentChapter === 3) {
+    const mInput = document.getElementById('mobile-typing-input');
+    if (mInput) {
+      mInput.focus();
+    }
+  }
+});
 
 document.getElementById('start-btn-3').addEventListener('click', () => {
   document.getElementById('title-screen').style.display = 'none';
@@ -13,6 +26,7 @@ async function runChapter3() {
   logWindow.innerHTML = '';
   hackPhase = 0;
   syncCount = 0; 
+  isTypingActive3 = false; // 初期化時はオフ
   shipStatus.textContent = "CHRONOS M-SYS // STATUS: DOCKED";
   shipStatus.style.color = "#0f0";
   syncRateDisplay.textContent = "SYSTEM DOWN";
@@ -28,7 +42,7 @@ async function runChapter3() {
   
   await waitForChoice([{ id: 'ch3-1', text: 'メシにするか', logText: 'ああ。システムが復旧するまで、備蓄のレーション（宇宙食）でも食おうぜ。' }]);
 
-  await addLog("ROYAL", "……っ！？ な、なんですかこのパサパサで味のしない物体は！ 我が星の家畜でも、もう少しマシなものを食べますよ！", "royal-msg");
+  await addLog("ROYAL", "……っ！？ な,なんですかこのパサパサで味のしない物体は！ 我が星の家畜でも、もう少しマシなものを食べますよ！", "royal-msg");
   await sleep(500);
   
   await addLog("AGENT", "うるせぇな、こちとら36時間連続勤務のハッキング明けなんだよ！ このジャンクな塩分が五臓六腑に染み渡るんだぜ……。", "agent-msg");
@@ -88,15 +102,24 @@ async function startFinalBattlePhase() {
   } else if (hackPhase === 3) {
     currentCode = "CHRONOS_PROTOCOL"; 
     entityCore.style.borderRadius = "50%";
-    await addLog("ENTITY", "[FINAL PHASE] ……ヤツラノ波長ガ乱レタ。船長、最後ノ一撃ハ任セル。", "entity-msg");
+    await addLog("ENTITY", "[FINAL PHASE] ……ヤツラノ波長ガ乱レタ。船長,最後ノ一撃ハ任セル。", "entity-msg");
     await addLog("Kokoro", "『クロノス・プロトコル』発動準備！ コード入力後、タイミングを合わせてパルスを撃ち込んでください！", "kokoro-msg");
   } else {
     typingContainer.style.display = 'none';
+    isTypingActive3 = false; // タイピング終了
     prepareFinalBlow();
     return;
   }
   
   typingTarget.textContent = currentCode;
+
+  // ★タイピングフェーズが始まったらフラグをONにしてキーボードを強制起動
+  isTypingActive3 = true;
+  const mInput = document.getElementById('mobile-typing-input');
+  if (mInput) {
+    mInput.focus();
+  }
+
   document.addEventListener('keydown', handleTyping3);
 }
 
@@ -131,9 +154,10 @@ function handleTyping3(e) {
 }
 
 async function prepareFinalBlow() {
+    isTypingActive3 = false; // 念のためオフ
     await addLog("SYSTEM", "ハッキング完了。対象のコアが露出。同調プロセスを開始します。", "system-msg");
     syncBtn.style.display = "block"; 
-    syncBtn.disabled = false; // ★ここを追加！ボタンを確実に有効化する
+    syncBtn.disabled = false; 
 
     let pulseCounter = 0;
     const playFinalBeat = () => {
@@ -182,7 +206,7 @@ syncBtn.addEventListener('click', async () => {
         
         await addLog("ENTITY", "……『バディ』。成程、悪クナイ響キダ。", "entity-msg");
         await sleep(3000);
- 
+
         // ▼ エピローグ＆スタッフロール ▼
         document.getElementById('game-screen').style.display = 'none';
         const endingScreen = document.getElementById('ending-screen');
@@ -192,7 +216,6 @@ syncBtn.addEventListener('click', async () => {
         const creditsContent = document.getElementById('credits-content');
         const returnBtn = document.getElementById('return-title-btn');
         
-        // 「俺たちの戦いはこれからだ！」テキスト
         epilogueText.innerHTML = 
             "レグルス要塞のシステム奪還……しかし、それは広大な星界を巻き込む大戦の、ほんの序章に過ぎなかった。<br><br>" +
             "「いつになったら温泉（有給）行けるんだよ！」と喚くエージェント。<br>" +
@@ -200,21 +223,18 @@ syncBtn.addEventListener('click', async () => {
             "そして、次元を超えた居候たちを乗せ、探査船クロノスは次なる戦場へと跳躍する。<br><br>" +
             "寄せ集めのバディたちが挑む反攻作戦は、まだ始まったばかりだ――！";
         
-        // ふわっと表示
         await sleep(1000);
         epilogueText.style.opacity = "1";
         
-        // 読ませる時間（6秒）
         await sleep(6000);
         epilogueText.style.opacity = "0";
         await sleep(2000);
         
-        // スタッフロールのスクロール開始
         let pos = 250;
         const scrollInterval = setInterval(() => {
             pos -= 1;
             creditsContent.style.top = pos + 'px';
-            if (pos < -350) { // スクロール終了位置
+            if (pos < -350) { 
                 clearInterval(scrollInterval);
                 returnBtn.style.display = 'block'; 
             }
@@ -222,12 +242,10 @@ syncBtn.addEventListener('click', async () => {
     }
 });
 
-// ▼ タイトルへ戻るボタンの処理 ▼
 document.getElementById('return-title-btn').addEventListener('click', () => {
     document.getElementById('ending-screen').style.display = 'none';
     document.getElementById('title-screen').style.display = 'flex';
     
-    // 次回のためにリセット
     document.getElementById('epilogue-text').style.opacity = "0";
     document.getElementById('credits-content').style.top = '250px';
     document.getElementById('return-title-btn').style.display = 'none';

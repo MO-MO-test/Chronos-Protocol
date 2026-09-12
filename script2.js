@@ -10,6 +10,19 @@ let currentCode = "";
 let typedCode = "";
 let hackPhase = 0;
 
+// スマホ用：タイピング中かどうかを管理するフラグ
+let isTypingActive = false;
+
+// スマホで画面をタッチしたとき、タイピング中であればキーボードを再度出す
+document.addEventListener('click', () => {
+  if (isTypingActive) {
+    const mInput = document.getElementById('mobile-typing-input');
+    if (mInput) {
+      mInput.focus();
+    }
+  }
+});
+
 document.getElementById('start-btn-2').addEventListener('click', () => {
   document.getElementById('title-screen').style.display = 'none';
   document.getElementById('game-screen').style.display = 'flex';
@@ -20,6 +33,7 @@ document.getElementById('start-btn-2').addEventListener('click', () => {
 async function runChapter2() {
   logWindow.innerHTML = '';
   hackPhase = 0;
+  isTypingActive = false; // 初期化時はタイピングオフ
   shipStatus.textContent = "CHRONOS M-SYS // STATUS: JUMP COMPLETED";
   shipStatus.style.color = "#0f0";
   syncRateDisplay.textContent = "HACKING: 0.00%";
@@ -86,7 +100,7 @@ async function runChapter2() {
 }
 
 // ------------------------------------------
-// タイピングハッキング処理（コマンド面白くした版）
+// タイピングハッキング処理
 // ------------------------------------------
 async function startHackingPhase() {
   hackPhase++;
@@ -108,18 +122,26 @@ async function startHackingPhase() {
     await addLog("ROYAL", "最終防壁です！ 我が王家の血統認証（ブラッド・アクセス）を通してください！", "royal-msg");
   } else {
     typingContainer.style.display = 'none';
+    isTypingActive = false; // タイピング終了
     completeChapter2();
     return;
   }
   
   typingTarget.textContent = currentCode;
+
+  // ★タイピングフェーズが始まったらフラグをONにしてキーボードを強制起動する
+  isTypingActive = true;
+  const mInput = document.getElementById('mobile-typing-input');
+  if (mInput) {
+    mInput.focus();
+  }
+
   document.addEventListener('keydown', handleTyping);
 }
 
 function handleTyping(e) {
   if (currentChapter !== 2) return;
   
-  // ★正規表現に「0-9」を追加して、数字も打てるようにしました！
   if (!/^[a-zA-Z0-9_]$/.test(e.key)) return; 
 
   const inputChar = e.key.toUpperCase(); 
@@ -151,6 +173,7 @@ function handleTyping(e) {
 }
 
 async function completeChapter2() {
+  isTypingActive = false; // 念のため確実にオフ
   entityCore.style.boxShadow = "0 0 50px #0ff, inset 0 0 30px #0ff";
   entityCore.style.backgroundColor = "rgba(100, 255, 255, 0.9)";
   shipStatus.textContent = "STATUS: FIREWALL BREACHED";
@@ -162,13 +185,13 @@ async function completeChapter2() {
 
   await addLog("Kokoro", "やりました！ 防衛レーザーの照準、クロノス号と回収船から外れます！", "kokoro-msg");
   
-  await addLog("AGENT", "ふぅ……肝を冷やさせやがって。だが、借りを作ったつもりはねぇぞ。……さて、中に入ろうぜ。", "agent-msg");
+  await addLog("AGENT", "ふぅ……肝を冷やさせやがって。だが、借りを作ったつもりはねぇぞ。さて、中に入ろうぜ。", "agent-msg");
   
   await waitForChoice([{ id: 'ch2-6', text: '要塞に突入する', logText: 'レーザーが止まってるうちに、要塞のドックに船を入れるぞ！' }]);
   
   await addLog("SYSTEM", "レグルス要塞 内部ドックへ接近中…… -- [CHAPTER 2 PROGRESS...] --", "system-msg");
   
-setTimeout(() => {
+  setTimeout(() => {
     alert("CHRONOS PROTOCOL\n\n- CHAPTER 2 COMPLETED -\n\n要塞防壁のハッキングに成功。\n物語は最終章へ……");
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('title-screen').style.display = 'flex';
