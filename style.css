@@ -316,3 +316,23 @@ button:disabled {
     padding: 15px !important;
   }
 }
+
+/* クレジットをエンドロールのように下から上へ動かす */
+#credits-content {
+  animation-name: scrollUp;
+  animation-timing-function: linear; /* 一定の速度で動かす */
+  animation-fill-mode: forwards; /* スクロールし終わったらその状態をキープ */
+
+  /* ▼ここから秒数調整▼ */
+  animation-duration: 12s; /* スクロールにかかる時間（文字が流れる速さ） */
+  animation-delay: 8s; /* ★動き出すまでの待機時間（エピローグが消えるまで待つ！） */
+}
+
+@keyframes scrollUp {
+  0% {
+    top: 100%; /* スタート位置：枠のすぐ下（見えない位置） */
+  }
+  100% {
+    top: -100%; /* ゴール位置：上に向かって完全に通り抜ける */
+  }
+}
