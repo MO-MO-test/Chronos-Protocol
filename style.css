@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+body {
+  background-color: #050505;
+  color: #0f0;
+  font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+#console-container {
+  width: 90vw;
+  height: 90vh;
+  border: 2px solid #0a5;
+  background-color: rgba(0, 20, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 30px rgba(0, 255, 0, 0.2);
+  position: relative;
+}
+
+/* タイトル画面のスタイル */
+#title-screen {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle, #020 0%, #000 100%);
+}
+
+#game-title {
+  font-size: 3em;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+}
+
+#game-subtitle {
+  color: #8a8;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+#game-screen {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#status-bar {
+  border-bottom: 1px solid #0a5;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #020;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+#main-monitor {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid #0a5;
+  background: radial-gradient(circle, #020 0%, #000 100%);
+  overflow: hidden;
+}
+
+#entity-core {
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: 2px solid #0f0;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #0f0;
+  transition: all 0.2s ease-out;
+  opacity: 0;
+}
+
+#bottom-panel {
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+#log-window {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  line-height: 1.6;
+  text-shadow: 0 0 2px #0f0;
+}
+
+.log-entry { margin-bottom: 5px; }
+.system-msg { color: #8a8; }
+.warn-msg { color: #f44; font-weight: bold; text-shadow: 0 0 5px #f00; }
+.kokoro-msg { color: #0df; }
+.entity-msg { color: #ff0; font-style: italic; letter-spacing: 1px; }
+.captain-msg { color: #fff; font-weight: bold; }
+
+#interactive-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+}
+
+#choice-container {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #0f0;
+  border: 1px solid #0f0;
+  padding: 10px 20px;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+button:hover:not(:disabled) {
+  background-color: #0f0;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+}
+
+button:disabled {
+  border-color: #333;
+  color: #333;
+  background-color: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#sync-btn { display: none; font-size: 1.2em; padding: 10px 30px; }
+
+#start-btn-1, #start-btn-2, #start-btn-3 {
+  padding: 15px 40px;
+  background-color: transparent;
+  color: #0f0;
+  border: 2px solid #0f0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 400px;
+  text-align: center;
+}
+
+#start-btn-1:hover, #start-btn-2:hover, #start-btn-3:hover {
+  background-color: #0f0;
+  color: #000;
+  box-shadow: 0 0 15px #0f0;
+}
+
+.glitch-screen {
+  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both infinite;
+}
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* --- 第2章 新キャラクター用 --- */
+.royal-msg { color: #dda0dd; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; letter-spacing: 1px; } /* 王族：少し気品のある紫と明朝体 */
+.agent-msg { color: #ffa500; font-weight: bold; } /* 企業社員：作業服っぽいオレンジ */
+
+/* ==========================================
+   派手でグラフィッカルな演出用CSS追加
+   ========================================== */
+
+/* 画面全体に「ブラウン管の走査線（スキャンライン）」を走らせる */
+#console-container::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 99;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none; /* クリックを邪魔しない */
+}
+
+/* ==========================================
+   スタイリッシュなSFコア（ネオン・エネルギー体）
+   ========================================== */
+#entity-core {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #fff 10%, #0ff 40%, #00f080 70%, transparent 85%);
+  border-radius: 50%; /* 綺麗で完璧な正円にする */
+  box-shadow: 0 0 25px #0ff, 0 0 50px #00f080, inset 0 0 15px #fff;
+  animation: core-pulse 2s infinite alternate ease-in-out;
+}
+
+/* さらに周りにサイバーな外リング（波紋）を追加してグラフィッカルに */
+#entity-core::after {
+  content: "";
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  border: 2px dashed rgba(0, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: ring-spin 10s linear infinite;
+  pointer-events: none;
+}
+
+/* コアが呼吸するように脈打つアニメーション */
+@keyframes core-pulse {
+  0% { transform: scale(0.95); filter: brightness(1); box-shadow: 0 0 20px #0ff, 0 0 40px #00f080, inset 0 0 10px #fff; }
+  100% { transform: scale(1.05); filter: brightness(1.3); box-shadow: 0 0 40px #0ff, 0 0 80px #00f080, inset 0 0 20px #fff; }
+}
+
+/* 外リングがくるくる回転するアニメーション */
+@keyframes ring-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* グリッチ（バグ発生時）の画面揺れをさらに激しく！ */
+.glitch-screen {
+  animation: cyber-glitch 0.15s infinite;
+}
+
+@keyframes cyber-glitch {
+  0% { transform: translate(0, 0); filter: hue-rotate(0deg); }
+  20% { transform: translate(-5px, 5px); filter: hue-rotate(90deg); }
+  40% { transform: translate(-5px, -5px); filter: hue-rotate(180deg); }
+  60% { transform: translate(5px, 5px); filter: hue-rotate(270deg); }
+  80% { transform: translate(5px, -5px); filter: hue-rotate(360deg); }
+  100% { transform: translate(0, 0); filter: hue-rotate(0deg); }
+}
